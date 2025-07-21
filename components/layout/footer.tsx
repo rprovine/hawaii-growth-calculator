@@ -1,4 +1,3 @@
-import { Logo } from '@/components/ui/logo';
 import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 
 export function Footer() {
@@ -34,7 +33,7 @@ export function Footer() {
               </div>
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
-              Hawaii's premier AI and technology consulting firm, specializing in custom solutions 
+              Hawaii&apos;s premier AI and technology consulting firm, specializing in custom solutions 
               for local businesses. We help companies across the islands modernize their operations 
               and achieve sustainable growth through smart technology investments.
             </p>
