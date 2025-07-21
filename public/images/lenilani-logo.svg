@@ -1,0 +1,23 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="40" cy="40" r="35" fill="url(#logoGradient)" opacity="0.1"/>
+  
+  <!-- Main logo shape -->
+  <path d="M15 25 Q40 15 65 25 Q40 35 15 25" fill="url(#logoGradient)"/>
+  <path d="M20 45 Q40 35 60 45 Q40 55 20 45" fill="url(#logoGradient)" opacity="0.8"/>
+  
+  <!-- Text -->
+  <text x="85" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1f2937">
+    LeniLani
+  </text>
+  <text x="85" y="55" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">
+    Consulting
+  </text>
+</svg>

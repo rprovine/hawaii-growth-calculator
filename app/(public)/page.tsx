@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { PageLayout } from '@/components/layout/page-layout';
 import { 
   ArrowRight, 
   Calculator, 
@@ -12,7 +13,8 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+    <PageLayout>
+      <div className="bg-gradient-to-b from-gray-50 via-white to-gray-50">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center max-w-4xl mx-auto">
@@ -185,48 +187,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="font-bold text-xl mb-4">LeniLani Consulting</h3>
-              <p className="text-gray-400">
-                Hawaii&apos;s premier AI and technology consulting firm
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Services</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="https://www.lenilani.com/solutions" target="_blank" rel="noopener noreferrer">AI Consulting</a></li>
-                <li><a href="https://www.lenilani.com/solutions" target="_blank" rel="noopener noreferrer">Fractional CTO</a></li>
-                <li><a href="https://www.lenilani.com/solutions" target="_blank" rel="noopener noreferrer">HubSpot Implementation</a></li>
-                <li><a href="https://www.lenilani.com/solutions" target="_blank" rel="noopener noreferrer">Digital Transformation</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="https://hawaii.lenilani.com/about" target="_blank" rel="noopener noreferrer">About Us</a></li>
-                <li><a href="https://hawaii.lenilani.com/case-studies" target="_blank" rel="noopener noreferrer">Case Studies</a></li>
-                <li><a href="https://hawaii.lenilani.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a></li>
-                <li><a href="https://hawaii.lenilani.com/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3">Contact</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>info@lenilani.com</li>
-                <li>815-641-6689</li>
-                <li>Honolulu, HI</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 LeniLani Consulting. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </PageLayout>
   );
 }

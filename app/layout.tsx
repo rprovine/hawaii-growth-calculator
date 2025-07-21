@@ -17,6 +17,15 @@ export const metadata: Metadata = {
   description: "Get a personalized technology roadmap and ROI analysis for your Hawaii business in 5 minutes. See how local companies save 20-45% on technology costs.",
   keywords: "Hawaii business technology, ROI calculator, digital transformation Hawaii, business growth calculator, technology consulting Hawaii",
   authors: [{ name: "LeniLani Consulting" }],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/images/lenilani-logo.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' },
+    ],
+  },
   openGraph: {
     title: "Hawaii Business Growth Calculator",
     description: "Discover your business growth potential with AI-powered insights tailored for Hawaii companies",
