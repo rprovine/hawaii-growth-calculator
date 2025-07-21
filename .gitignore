@@ -67,3 +67,5 @@ Thumbs.db
 ../hawaii-analytics-project/
 ../hawaiian-lenilani-chatbot/
 ../jsmasterypro/
+# Test files
+test-*.js
