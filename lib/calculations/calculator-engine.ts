@@ -179,8 +179,12 @@ export function calculateResults(data: CalculatorData): CalculationResults {
   const baseSolution = BUDGET_IMPLEMENTATION_MAP[preferences.budgetRange as keyof typeof BUDGET_IMPLEMENTATION_MAP] 
     || BUDGET_IMPLEMENTATION_MAP['under-5k'];
   
-  // Scale solution cost based on current spend to avoid negative ROI
-  const currentMonthlyCost = techAssessment.totalMonthlyCost || 0;
+  // Calculate current monthly tech spend based on tech budget percentage and company size
+  const currentMonthlyCost = estimateMonthlyTechSpend(
+    techAssessment,
+    companyInfo.companySize || '1-10',
+    companyInfo.revenueRange
+  );
   
   // Check if this is a micro-business (under $1000/month tech spend)
   const isMicroBusiness = currentMonthlyCost < 1000;
@@ -335,22 +339,90 @@ function calculateAverageSatisfaction(scores: Record<string, number>): number {
   return values.reduce((sum, score) => sum + score, 0) / values.length;
 }
 
+function estimateMonthlyTechSpend(
+  techAssessment: any,
+  companySize: string,
+  revenueRange?: string
+): number {
+  // If totalMonthlyCost is provided, use it
+  if (techAssessment.totalMonthlyCost) {
+    return techAssessment.totalMonthlyCost;
+  }
+  
+  // Otherwise, estimate based on tech budget percentage and company size
+  const budgetPercentageMap: Record<string, number> = {
+    'less_than_1': 0.005,    // 0.5% of revenue
+    '1_to_3': 0.02,          // 2% of revenue
+    '3_to_5': 0.04,          // 4% of revenue
+    'more_than_5': 0.06,     // 6% of revenue
+  };
+  
+  const revenueRangeMap: Record<string, number> = {
+    'under-250k': 150000,     // Use midpoint
+    '250k-500k': 375000,
+    '500k-1m': 750000,
+    '1m-5m': 3000000,
+    '5m-10m': 7500000,
+    '10m-25m': 17500000,
+    'over-25m': 35000000,
+  };
+  
+  const companySizeMap: Record<string, number> = {
+    '1-10': 500,      // Base spend for micro businesses
+    '11-50': 2500,    // Base spend for small businesses
+    '51-200': 7500,   // Base spend for medium businesses
+    '201-500': 15000, // Base spend for larger businesses
+    '500+': 30000,    // Base spend for enterprise
+  };
+  
+  // Get base spend from company size
+  let baseSpend = companySizeMap[companySize] || 1000;
+  
+  // If we have revenue range and budget percentage, calculate more accurately
+  if (revenueRange && techAssessment.techBudgetPercentage) {
+    const estimatedRevenue = revenueRangeMap[revenueRange] || 1000000;
+    const budgetPercent = budgetPercentageMap[techAssessment.techBudgetPercentage] || 0.02;
+    const annualTechBudget = estimatedRevenue * budgetPercent;
+    baseSpend = annualTechBudget / 12; // Monthly
+  }
+  
+  // Adjust based on current software usage
+  if (techAssessment.currentSoftware && Array.isArray(techAssessment.currentSoftware)) {
+    const softwareCount = techAssessment.currentSoftware.length;
+    const avgCostPerSoftware = 200; // Average $200 per software tool
+    const estimatedFromSoftware = softwareCount * avgCostPerSoftware;
+    
+    // Use the higher of the two estimates
+    baseSpend = Math.max(baseSpend, estimatedFromSoftware);
+  }
+  
+  // Hawaii premium adjustment (costs are higher in Hawaii)
+  return Math.round(baseSpend * HAWAII_MARKET_FACTORS.costPremium);
+}
+
 function getCustomDescription(
   solutionType: string,
   industry: string,
   location: string
 ): string {
-  const locationName = location.includes('Oahu') ? 'Oahu' : location;
+  const locationName = location.charAt(0).toUpperCase() + location.slice(1).toLowerCase();
+  const industryName = industry.toLowerCase().replace(' & ', ' and ');
   
   const descriptions: Record<string, string> = {
+    'Hawaii DIY Digital Transformation Kit':
+      `Perfect for growing ${industryName} businesses in ${locationName}. This self-service kit provides essential tools, templates, and training to modernize your operations at your own pace while keeping costs minimal.`,
+    'Hawaii Business Starter Package':
+      `Ideal for small ${industryName} businesses in ${locationName} ready to digitize. Core tools with guided implementation help you streamline operations and improve efficiency without breaking the budget.`,
+    'Hawaii Business Growth Package':
+      `Designed for expanding ${industryName} companies in ${locationName}. Comprehensive tools with professional support to scale your operations and compete more effectively in the local market.`,
     'Essential Hawaii Business Suite': 
-      `Perfect for growing ${industry.toLowerCase()} businesses in ${locationName}. This suite provides core tools to streamline operations, improve customer relationships, and boost efficiency while keeping costs manageable.`,
+      `Perfect for growing ${industryName} businesses in ${locationName}. This suite provides core tools to streamline operations, improve customer relationships, and boost efficiency while keeping costs manageable.`,
     'Hawaii Growth Accelerator Platform': 
-      `Designed for established ${industry.toLowerCase()} companies ready to scale across Hawaii. Advanced automation and AI-powered insights help you compete with larger competitors while maintaining local agility.`,
+      `Designed for established ${industryName} companies ready to scale across Hawaii. Advanced automation and AI-powered insights help you compete with larger competitors while maintaining local agility.`,
     'Enterprise Hawaii Solution': 
-      `Comprehensive platform for large ${industry.toLowerCase()} organizations in ${locationName}. Full digital transformation with enterprise features tailored to Hawaii's unique business environment.`,
+      `Comprehensive platform for large ${industryName} organizations in ${locationName}. Full digital transformation with enterprise features tailored to Hawaii's unique business environment.`,
     'Custom Enterprise Transformation': 
-      `Bespoke solution for ${industry.toLowerCase()} leaders in Hawaii. Complete digital ecosystem designed around your specific needs with unlimited customization and scaling potential.`,
+      `Bespoke solution for ${industryName} leaders in Hawaii. Complete digital ecosystem designed around your specific needs with unlimited customization and scaling potential.`,
   };
   
   return descriptions[solutionType] || descriptions['Essential Hawaii Business Suite'];
