@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Phone, Mail } from 'lucide-react';
 
@@ -10,7 +11,7 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Company Name Only */}
           <div className="flex items-center">
-            <a href="/" className="hover:opacity-80 transition-opacity">
+            <Link href="/" className="hover:opacity-80 transition-opacity">
               <div className="flex flex-col">
                 <span className="text-xl font-bold text-gray-900 leading-tight">
                   LeniLani Consulting
@@ -19,7 +20,7 @@ export function Header() {
                   Hawaii Business Growth
                 </span>
               </div>
-            </a>
+            </Link>
           </div>
           
           {/* Contact Information */}
