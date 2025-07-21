@@ -62,8 +62,8 @@ export function Header() {
               className="bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600"
               asChild
             >
-              <a href="#calculator">
-                Get Started
+              <a href="https://hawaii.lenilani.com/#cta" target="_blank" rel="noopener noreferrer">
+                Contact Us
               </a>
             </Button>
           </div>
