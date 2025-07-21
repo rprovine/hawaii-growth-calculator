@@ -1,0 +1,15 @@
+# Vercel ignore file
+.env.local
+.env.production
+node_modules
+.next
+.git
+.gitignore
+*.log
+.DS_Store
+coverage
+.vscode
+.idea
+prisma/migrations
+prisma/dev.db
+prisma/dev.db-journal

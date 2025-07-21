@@ -1,0 +1,57 @@
+services:
+  # Web service for the Next.js application
+  - type: web
+    name: hawaii-growth-calculator
+    runtime: node
+    region: oregon # or singapore, frankfurt, ohio
+    plan: free # or starter ($7/month), standard ($25/month)
+    
+    # Build configuration
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    
+    # Node version
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+    
+    # Health check
+    healthCheckPath: /api/test
+    
+    # Environment variables
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://hawaii-growth-calculator.onrender.com
+      - key: NEXT_PUBLIC_SITE_NAME
+        value: Hawaii Business Growth Calculator
+      - key: NEXT_PUBLIC_PHONE
+        value: 815-641-6689
+      - key: NEXT_PUBLIC_EMAIL
+        value: info@lenilani.com
+      - key: NEXT_PUBLIC_ENABLE_EMAIL
+        value: "true"
+      - key: NEXT_PUBLIC_ENABLE_ADMIN
+        value: "false"
+      - key: NEXT_PUBLIC_DEBUG_MODE
+        value: "false"
+      # Add these in Render dashboard for security:
+      # - HUBSPOT_ACCESS_TOKEN
+      # - HUBSPOT_PORTAL_ID
+      # - DATABASE_URL (if using PostgreSQL)
+      # - SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS (if using email)
+
+# Optional: PostgreSQL database
+# databases:
+#   - name: hawaii-growth-db
+#     region: oregon
+#     plan: free # 256MB storage limit
+#     ipAllowList: [] # Allow connections from anywhere
+
+# Optional: Redis for caching
+# - type: redis
+#   name: hawaii-growth-cache
+#   region: oregon
+#   plan: free # 25MB memory
+#   ipAllowList: []

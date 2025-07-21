@@ -1,0 +1,255 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// User/Lead model with comprehensive profile data
+model Lead {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Contact Information
+  email             String   @unique
+  firstName         String
+  lastName          String
+  phone             String?
+  title             String?
+  
+  // Company Information
+  companyName       String
+  industry          String
+  companySize       String // "1-10", "11-50", "51-100", "100+"
+  location          String
+  revenueRange      String?
+  growthStage       String? // "startup", "growth", "established", "enterprise"
+  website           String?
+  
+  // Lead Qualification
+  leadScore         Int      @default(0)
+  leadStatus        String   @default("new") // "new", "contacted", "qualified", "unqualified", "customer"
+  leadSource        String?  // "organic", "paid", "referral", "direct"
+  marketingConsent  Boolean  @default(false)
+  
+  // HubSpot Integration
+  hubspotContactId  String?  @unique
+  hubspotDealId     String?
+  hubspotSyncedAt   DateTime?
+  
+  // Relations
+  calculations      Calculation[]
+  emailActivities   EmailActivity[]
+  consultations     Consultation[]
+  
+  @@index([email])
+  @@index([companyName])
+  @@index([leadStatus])
+}
+
+// Calculator Submission with all input data
+model Calculation {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Association
+  leadId            String
+  lead              Lead     @relation(fields: [leadId], references: [id])
+  
+  // Company Assessment
+  currentPainPoints Json     // Array of selected pain points
+  currentTools      Json     // Object with tool categories and costs
+  totalCurrentCost  Float
+  satisfactionScores Json    // Object with category ratings
+  
+  // Growth Goals
+  businessObjectives Json    // Array of selected objectives
+  techBarriers      Json     // Array of identified barriers
+  priorityAreas     Json     // Array of improvement areas
+  
+  // Solution Preferences
+  budgetRange       String   // "under-5k", "5k-15k", "15k-50k", "50k+"
+  timeline          String   // "immediate", "3-months", "6-months", "12-months"
+  implementationType String  // "diy", "guided", "full-service"
+  decisionMakers    Json     // Array of stakeholder roles
+  
+  // Calculation Results
+  recommendedSolution Json   // Detailed solution recommendations
+  estimatedSavings  Float
+  roiProjection     Float
+  paybackPeriod     Int      // in months
+  implementationCost Float
+  totalValue        Float
+  competitiveAnalysis Json   // Comparison with alternatives
+  
+  // Tracking
+  completionTime    Int?     // Time to complete in seconds
+  stepDropoff       String?  // Last step before abandonment
+  pdfGenerated      Boolean  @default(false)
+  pdfUrl            String?
+  uniqueTrackingId  String   @unique @default(cuid())
+  
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+// Email Tracking and Engagement
+model EmailActivity {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  
+  // Association
+  leadId            String
+  lead              Lead     @relation(fields: [leadId], references: [id])
+  
+  // Email Details
+  emailType         String   // "welcome", "report", "followup-1", "followup-2", etc.
+  subject           String
+  sentAt            DateTime?
+  openedAt          DateTime?
+  clickedAt         DateTime?
+  
+  // Tracking
+  resendMessageId   String?  @unique
+  opens             Int      @default(0)
+  clicks            Int      @default(0)
+  unsubscribed      Boolean  @default(false)
+  bounced           Boolean  @default(false)
+  
+  @@index([leadId])
+  @@index([emailType])
+}
+
+// Consultation Bookings
+model Consultation {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Association
+  leadId            String
+  lead              Lead     @relation(fields: [leadId], references: [id])
+  
+  // Booking Details
+  scheduledAt       DateTime
+  duration          Int      // in minutes
+  type              String   // "discovery", "demo", "strategy"
+  status            String   @default("scheduled") // "scheduled", "completed", "cancelled", "no-show"
+  
+  // Meeting Details
+  meetingUrl        String?
+  notes             String?
+  recordingUrl      String?
+  
+  // Outcome
+  outcome           String?  // "qualified", "not-ready", "not-fit"
+  nextSteps         String?
+  dealValue         Float?
+  
+  @@index([leadId])
+  @@index([scheduledAt])
+}
+
+// A/B Testing Variants
+model ABTest {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Test Configuration
+  name              String
+  description       String?
+  status            String   @default("active") // "draft", "active", "paused", "completed"
+  startDate         DateTime?
+  endDate           DateTime?
+  
+  // Variants
+  variants          Json     // Array of variant configurations
+  trafficAllocation Json     // Percentage allocation per variant
+  
+  // Results
+  impressions       Int      @default(0)
+  conversions       Int      @default(0)
+  conversionRate    Float    @default(0)
+  winningVariant    String?
+  confidence        Float?   // Statistical confidence
+  
+  @@index([status])
+}
+
+// Admin Configuration
+model Configuration {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Settings Categories
+  category          String   // "pricing", "benchmarks", "industries", "email", "features"
+  key               String
+  value             Json
+  description       String?
+  
+  // Meta
+  lastModifiedBy    String?
+  isActive          Boolean  @default(true)
+  
+  @@unique([category, key])
+  @@index([category])
+}
+
+// Analytics Events
+model AnalyticsEvent {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  
+  // Event Details
+  sessionId         String
+  eventType         String   // "page_view", "form_start", "form_complete", "step_complete", etc.
+  eventData         Json?
+  
+  // User Context
+  leadId            String?
+  userAgent         String?
+  ipAddress         String?
+  referrer          String?
+  utmSource         String?
+  utmMedium         String?
+  utmCampaign       String?
+  
+  // Performance
+  pageLoadTime      Float?
+  
+  @@index([sessionId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// Admin Users
+model AdminUser {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Credentials
+  email             String   @unique
+  hashedPassword    String
+  
+  // Profile
+  name              String
+  role              String   @default("admin") // "admin", "super_admin", "viewer"
+  isActive          Boolean  @default(true)
+  
+  // Security
+  lastLoginAt       DateTime?
+  failedAttempts    Int      @default(0)
+  lockedUntil       DateTime?
+  
+  @@index([email])
+}

@@ -1,0 +1,20 @@
+
+> hawaii-growth-calculator@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.4.2
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.4.97:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1482ms
+ ○ Compiling /api/test-hubspot ...
+ ✓ Compiled /api/test-hubspot in 3.6s (2965 modules)
+(node:19428) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ GET /api/test-hubspot 200 in 4421ms
+ ✓ Compiled in 11ms
+ ✓ Compiled in 52ms (184 modules)
+   Reload env: .env.local
+ ✓ Compiled in 94ms (184 modules)
